@@ -105,7 +105,7 @@ const TRANSLATIONS = {
     calc_est_revenue: '预估月广告分成',
     calc_breakeven: '只需 {amount} 万流量即可赚回蓝标费($8)',
     calc_share_btn: '生成战报并分享引流',
-    calc_share_text: '💰 我用 X-GoldRush 测算了我的账号潜力！\n\n📊 月流量估算: {impressions}万\n💸 潜在月收入: ${revenue}\n🎯 赛道: {niche}\n\n👉 快来测测你的推特账号值多少钱：\nhttps://x-goldrush.app #XRevenue #Monetization',
+    calc_share_text: '💰 我用 X-GoldRush 测算了我的账号潜力！\n\n📊 月流量估算: {impressions}万\n💸 潜在月收入: ${revenue}\n🎯 赛道: {niche}\n\n👉 快来测测你的推特账号值多少钱：\nhttps://x-goldrush.vercel.app/ #Twitter变现 #XRevenue',
 
     check_title: '收益开通资格自检',
     check_sync: '数据已同步',
@@ -195,7 +195,7 @@ const TRANSLATIONS = {
     calc_est_revenue: 'Est. Monthly Revenue',
     calc_breakeven: 'Need {amount}0k views to cover X Premium($8)',
     calc_share_btn: 'Generate Report & Share',
-    calc_share_text: '💰 I checked my X account potential with X-GoldRush!\n\n📊 Est. Impressions: {impressions}0k\n💸 Potential Revenue: ${revenue}/mo\n🎯 Niche: {niche}\n\n👉 Check yours now:\nhttps://x-goldrush.app #XRevenue #Monetization',
+    calc_share_text: '💰 I checked my X account potential with X-GoldRush!\n\n📊 Est. Impressions: {impressions}0k\n💸 Potential Revenue: ${revenue}/mo\n🎯 Niche: {niche}\n\n👉 Check yours now:\nhttps://x-goldrush.vercel.app/ #XRevenue #Monetization',
 
     check_title: 'Eligibility Check',
     check_sync: 'Data Synced',
