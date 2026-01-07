@@ -1,16 +1,13 @@
-'use client';
 import React, { useState, useEffect } from 'react';
 import { 
   Calculator, 
   CheckCircle2, 
-  X, 
+  X as CloseIcon, // Rename X to avoid conflict with X Brand Logo
   Users, 
   TrendingUp, 
   AlertTriangle, 
   Copy, 
   ExternalLink,
-  Twitter,
-  Search,
   Plus,
   ShieldCheck,
   RefreshCw,
@@ -33,36 +30,43 @@ import {
   Bookmark,
   MessageSquarePlus,
   ArrowRight,
-  MessageCircle,
   QrCode,
   Github,
   Globe,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Menu // Import Menu icon for mobile
 } from 'lucide-react';
 
-// --- Custom Logo Component (Image Based) ---
+// --- Custom Brand Icons (SVG) ---
+
+// 1. Official X Logo (The new Twitter)
+const XBrandLogo = ({ className = "w-5 h-5" }) => (
+  <svg viewBox="0 0 24 24" className={className} fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+);
+
+// 2. Official Telegram Logo (Paper Plane)
+const TelegramLogo = ({ className = "w-5 h-5" }) => (
+  <svg viewBox="0 0 24 24" className={className} fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+// --- Custom App Logo Component (Your Gold Pickaxe Image) ---
 const AppLogo = ({ className = "w-8 h-8" }) => (
   <div className={`${className} relative shrink-0 flex items-center justify-center rounded-xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-950 border border-slate-700 shadow-lg group`}>
-    {/* Background Glow Effect */}
     <div className="absolute inset-0 bg-yellow-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-    
-    {/* ⚠️ 真实开发替换指南 / REPLACEMENT GUIDE:
-      1. 把您的 Logo 图片重命名为 'logo.png'
-      2. 放入项目的 public/ 文件夹中
-      3. 刷新页面即可看到
-    */}
     <img 
       src="/logo.png" 
       alt="X-GoldRush Logo" 
       className="w-[80%] h-[80%] object-contain relative z-10"
       onError={(e) => {
-        // 如果找不到图片，显示占位符
         e.target.style.display = 'none';
         e.target.nextSibling.style.display = 'flex';
       }}
     />
-    
-    {/* 占位符 (当图片未上传时显示) */}
     <div className="hidden absolute inset-0 flex-col items-center justify-center bg-slate-900 text-slate-500">
       <ImageIcon size={12} />
       <span className="text-[6px] font-bold mt-0.5 tracking-tighter">LOGO</span>
@@ -78,10 +82,10 @@ const TRANSLATIONS = {
     nav_tools: '掘金罗盘',
     nav_mutual: '创作者联盟',
     nav_resources: '变现学院',
-    login_btn: '连接推特',
+    login_btn: '连接 X 账号',
     login_loading: '连接中...',
     logout: '退出登录',
-    footer_desc: '专为推特创作者打造的变现加速器。',
+    footer_desc: '专为 X (推特) 创作者打造的变现加速器。',
     footer_privacy: '隐私保护',
     footer_api: '不调用 Write API',
     footer_scam: '防骗指南',
@@ -89,7 +93,7 @@ const TRANSLATIONS = {
     footer_donate: '捐赠支持',
     
     // Tools Section
-    hero_title_1: '推特掘金，',
+    hero_title_1: 'X 掘金，',
     hero_title_2: '从这里开始',
     hero_desc_guest: '一站式评估账号价值，规避限流风险，加速获取收益资格。',
     hero_desc_user: '欢迎回来，{name}。这是您的专属变现仪表盘。',
@@ -100,7 +104,7 @@ const TRANSLATIONS = {
     calc_est_revenue: '预估月广告分成',
     calc_breakeven: '只需 {amount} 万流量即可赚回蓝标费($8)',
     calc_share_btn: '生成战报并分享引流',
-    calc_share_text: '💰 我用 X-GoldRush 测算了我的账号潜力！\n\n📊 月流量估算: {impressions}万\n💸 潜在月收入: ${revenue}\n🎯 赛道: {niche}\n\n👉 快来测测你的推特账号值多少钱：\nhttps://x-goldrush.app #Twitter变现 #XRevenue',
+    calc_share_text: '💰 我用 X-GoldRush 测算了我的账号潜力！\n\n📊 月流量估算: {impressions}万\n💸 潜在月收入: ${revenue}\n🎯 赛道: {niche}\n\n👉 快来测测你的推特账号值多少钱：\nhttps://x-goldrush.app #XRevenue #Monetization',
 
     check_title: '收益开通资格自检',
     check_sync: '数据已同步',
@@ -130,7 +134,7 @@ const TRANSLATIONS = {
     hub_desc: '连接行业头部与同频伙伴，摆脱单机运营',
     hub_btn_join_guest: '加入联盟 (需登录)',
     hub_btn_join_user: '发布我的名片',
-    hub_alert_msg: '列表包含 行业KOL (推荐关注学习) 与 社区成员 (寻找互助)。所有关注行为均跳转至推特官方进行。',
+    hub_alert_msg: '列表包含 行业KOL (推荐关注学习) 与 社区成员 (寻找互助)。所有关注行为均跳转至 X 官方平台进行。',
     hub_alert_kol: '行业KOL',
     hub_alert_member: '社区成员',
     hub_refresh: '发现更多创作者',
@@ -361,7 +365,7 @@ const App = () => {
                   disabled={isLoginLoading}
                   className="hidden md:flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-full text-sm font-medium transition-all border border-slate-700 hover:border-slate-600"
                 >
-                  {isLoginLoading ? <RefreshCw className="animate-spin" size={16}/> : <Twitter size={16} />}
+                  {isLoginLoading ? <RefreshCw className="animate-spin" size={16}/> : <XBrandLogo className="w-4 h-4" />}
                   <span>{isLoginLoading ? t('login_loading') : t('login_btn')}</span>
                 </button>
               ) : (
@@ -379,33 +383,41 @@ const App = () => {
                 </div>
               )}
 
-              {/* Mobile Menu Button */}
-              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="md:hidden text-slate-300">
-                {isMobileMenuOpen ? <X /> : <Search />}
+              {/* Mobile Menu Button - CHANGED to Menu icon from Search icon */}
+              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="md:hidden text-slate-300 p-2 hover:bg-slate-800 rounded-lg transition-colors">
+                {isMobileMenuOpen ? <CloseIcon /> : <Menu />}
               </button>
             </div>
           </div>
         </div>
         
-        {/* Mobile Nav */}
+        {/* Mobile Nav - IMPROVED VISIBILITY */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-slate-800 bg-slate-900 p-4 space-y-4">
+          <div className="md:hidden border-t border-slate-800 bg-slate-950 p-4 space-y-4 shadow-2xl relative z-50">
              {!user ? (
-                <button onClick={() => {handleLogin(); setIsMobileMenuOpen(false)}} className="w-full flex items-center justify-center gap-2 bg-[#1DA1F2] text-white py-2 rounded-lg font-bold mb-4 shadow-lg shadow-blue-500/20">
-                  <Twitter size={16} /> {t('login_btn')}
+                <button onClick={() => {handleLogin(); setIsMobileMenuOpen(false)}} className="w-full flex items-center justify-center gap-2 bg-white text-black py-3 rounded-xl font-bold mb-4 shadow-lg active:scale-95 transition-transform">
+                  <XBrandLogo className="w-5 h-5" /> {t('login_btn')}
                 </button>
              ) : (
-               <div className="flex items-center gap-3 mb-4 p-3 bg-slate-800/50 rounded-xl border border-slate-700">
+               <div className="flex items-center gap-3 mb-4 p-4 bg-slate-900 rounded-xl border border-slate-800">
                  <div className="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center text-slate-900 font-bold">{user.avatar}</div>
                  <div>
                    <p className="text-white font-bold">{user.name}</p>
-                   <button onClick={handleLogout} className="text-xs text-red-400 font-medium">{t('logout')}</button>
+                   <button onClick={handleLogout} className="text-xs text-red-400 font-medium flex items-center gap-1 mt-1"><LogOut size={12}/> {t('logout')}</button>
                  </div>
                </div>
              )}
-            <button onClick={() => {setActiveTab('tools'); setIsMobileMenuOpen(false)}} className="w-full text-left text-slate-300 py-3 px-2 font-medium hover:bg-slate-800 rounded-lg flex items-center gap-3"><Compass size={18}/> {t('nav_tools')}</button>
-            <button onClick={() => {setActiveTab('mutual'); setIsMobileMenuOpen(false)}} className="w-full text-left text-slate-300 py-3 px-2 font-medium hover:bg-slate-800 rounded-lg flex items-center gap-3"><Users size={18}/> {t('nav_mutual')}</button>
-            <button onClick={() => {setActiveTab('resources'); setIsMobileMenuOpen(false)}} className="w-full text-left text-slate-300 py-3 px-2 font-medium hover:bg-slate-800 rounded-lg flex items-center gap-3"><GraduationCap size={18}/> {t('nav_resources')}</button>
+            <div className="space-y-1">
+              <button onClick={() => {setActiveTab('tools'); setIsMobileMenuOpen(false)}} className={`w-full text-left py-3 px-4 font-medium rounded-xl flex items-center gap-3 transition-colors ${activeTab === 'tools' ? 'bg-slate-800 text-yellow-400' : 'text-slate-400 hover:bg-slate-900 hover:text-white'}`}>
+                <Compass size={20}/> {t('nav_tools')}
+              </button>
+              <button onClick={() => {setActiveTab('mutual'); setIsMobileMenuOpen(false)}} className={`w-full text-left py-3 px-4 font-medium rounded-xl flex items-center gap-3 transition-colors ${activeTab === 'mutual' ? 'bg-slate-800 text-yellow-400' : 'text-slate-400 hover:bg-slate-900 hover:text-white'}`}>
+                <Users size={20}/> {t('nav_mutual')}
+              </button>
+              <button onClick={() => {setActiveTab('resources'); setIsMobileMenuOpen(false)}} className={`w-full text-left py-3 px-4 font-medium rounded-xl flex items-center gap-3 transition-colors ${activeTab === 'resources' ? 'bg-slate-800 text-yellow-400' : 'text-slate-400 hover:bg-slate-900 hover:text-white'}`}>
+                <GraduationCap size={20}/> {t('nav_resources')}
+              </button>
+            </div>
           </div>
         )}
       </nav>
@@ -432,10 +444,10 @@ const App = () => {
             {/* Social Links - Persistent */}
             <div className="flex items-center gap-4">
               <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-600 transition-all group" title="Follow Author">
-                <Twitter size={18} className="group-hover:text-[#1DA1F2]" />
+                <XBrandLogo className="w-5 h-5 group-hover:text-white" />
               </a>
               <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-600 transition-all group" title="Join Telegram">
-                <MessageCircle size={18} className="group-hover:text-[#229ED9]" />
+                <TelegramLogo className="w-5 h-5 group-hover:text-[#229ED9]" />
               </a>
               <button 
                 onClick={() => alert('Add WeChat: X_Gold_Admin')}
@@ -658,7 +670,7 @@ const MonetizationChecklist = ({ user, t }) => {
         </div>
         <div>
           <h2 className="text-xl font-bold text-white">{t('check_title')}</h2>
-          {user && <span className="text-[10px] text-blue-400 flex items-center gap-1"><Twitter size={10} /> {t('check_sync')}</span>}
+          {user && <span className="text-[10px] text-blue-400 flex items-center gap-1"><XBrandLogo className="w-3 h-3" /> {t('check_sync')}</span>}
         </div>
       </div>
 
