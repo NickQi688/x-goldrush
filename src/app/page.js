@@ -35,7 +35,8 @@ import {
   Github,
   Globe,
   Image as ImageIcon,
-  Menu // Import Menu icon for mobile
+  Menu, // Import Menu icon for mobile
+  MessageCircle
 } from 'lucide-react';
 
 // --- Custom Brand Icons (SVG) ---
@@ -59,6 +60,7 @@ const TelegramLogo = ({ className = "w-5 h-5" }) => (
 const AppLogo = ({ className = "w-8 h-8" }) => (
   <div className={`${className} relative shrink-0 flex items-center justify-center rounded-xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-950 border border-slate-700 shadow-lg group`}>
     <div className="absolute inset-0 bg-yellow-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+    {/* ⚠️ 真实开发替换指南: 确保 logo.png 在 public 文件夹中 */}
     <img 
       src="/logo.png" 
       alt="X-GoldRush Logo" 
@@ -105,7 +107,7 @@ const TRANSLATIONS = {
     calc_est_revenue: '预估月广告分成',
     calc_breakeven: '只需 {amount} 万流量即可赚回蓝标费($8)',
     calc_share_btn: '生成战报并分享引流',
-    calc_share_text: '💰 我用 X-GoldRush 测算了我的账号潜力！\n\n📊 月流量估算: {impressions}万\n💸 潜在月收入: ${revenue}\n🎯 赛道: {niche}\n\n👉 快来测测你的推特账号值多少钱：\nhttps://x-goldrush.vercel.app/ #Twitter变现 #XRevenue',
+    calc_share_text: '💰 我用 X-GoldRush 测算了我的账号潜力！\n\n📊 月流量估算: {impressions}万\n💸 潜在月收入: ${revenue}\n🎯 赛道: {niche}\n\n👉 快来测测你的推特账号值多少钱：\nhttps://x-goldrush.vercel.app/ #XRevenue #Monetization',
 
     check_title: '收益开通资格自检',
     check_sync: '数据已同步',
@@ -162,7 +164,7 @@ const TRANSLATIONS = {
     
     // Mock Data Text
     rpm_crypto_label: 'Web3 / 金融 / 币圈', rpm_crypto_desc: '广告主预算高，单价最高',
-    rpm_tech_label: 'AI / 科技 / 独立开发', rpm_tech_desc: '优质技术受众',
+    rpm_tech_label: 'AI / Tech / 独立开发', rpm_tech_desc: '优质技术受众',
     rpm_business_label: '商业 / 投资 / 搞钱', rpm_business_desc: '高净值人群',
     rpm_general_label: '生活 / 搞笑 / 搬运', rpm_general_desc: '流量大但单价低',
     rpm_adult_label: '擦边 / 敏感内容', rpm_adult_desc: '极难变现，容易被限流',
@@ -263,6 +265,7 @@ const App = () => {
   const [activeTab, setActiveTab] = useState('tools');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [lang, setLang] = useState('zh'); // 'zh' or 'en'
+  const [isWeChatOpen, setIsWeChatOpen] = useState(false); // State for WeChat QR Modal
   
   // 模拟用户登录状态
   const [user, setUser] = useState(null);
@@ -444,14 +447,24 @@ const App = () => {
 
             {/* Social Links - Persistent */}
             <div className="flex items-center gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-600 transition-all group" title="Follow Author">
+              <a 
+                href="https://x.com/Xiaojing_AI" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-600 transition-all group" 
+                title="Follow Author"
+              >
                 <XBrandLogo className="w-5 h-5 group-hover:text-white" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-600 transition-all group" title="Join Telegram">
+              
+              {/* Telegram Hidden as requested, but keeping component available */}
+              {/* <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-600 transition-all group" title="Join Telegram">
                 <TelegramLogo className="w-5 h-5 group-hover:text-[#229ED9]" />
-              </a>
+              </a> 
+              */}
+
               <button 
-                onClick={() => alert('Add WeChat: X_Gold_Admin')}
+                onClick={() => setIsWeChatOpen(true)}
                 className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-600 transition-all group" 
                 title="WeChat Contact"
               >
@@ -474,6 +487,43 @@ const App = () => {
           </div>
         </div>
       </footer>
+
+      {/* WeChat QR Code Modal */}
+      {isWeChatOpen && (
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in"
+          onClick={() => setIsWeChatOpen(false)}
+        >
+          <div 
+            className="bg-slate-900 border border-slate-700 p-6 rounded-2xl max-w-sm w-full text-center relative shadow-2xl" 
+            onClick={e => e.stopPropagation()}
+          >
+            <button 
+              onClick={() => setIsWeChatOpen(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
+            >
+              <CloseIcon size={20} />
+            </button>
+            <h3 className="text-xl font-bold text-white mb-4">扫码加我微信</h3>
+            <div className="bg-white p-2 rounded-xl mb-4">
+               {/* ⚠️ REPLACEMENT GUIDE: Name your QR image 'wechat.png' and put in public/ folder */}
+               <img 
+                 src="/wechat.png" 
+                 alt="WeChat QR Code" 
+                 className="w-full h-auto rounded-lg"
+                 onError={(e) => {
+                   e.target.style.display = 'none'; 
+                   e.target.nextSibling.style.display = 'block';
+                 }} 
+               />
+               <div className="hidden py-8 text-slate-500 text-sm">
+                 二维码图片未找到<br/>请上传 wechat.png 到 public 目录
+               </div>
+            </div>
+            <p className="text-slate-400 text-sm">微信号: Xiaojingfuye</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
